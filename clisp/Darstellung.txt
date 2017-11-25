@@ -1,0 +1,1 @@
+Eine Liste, die einen Binären Baum darstellt, beginnt mit dem Wert des Elternknoten gefolgt von zwei inneren Listen, die zuerst den linken und dann den rechten Kindknoten darstellen. Kindknoten sind nach dem gleichen Prinzip aufgebaut. Beispiel: (4 (2 (1) (3) ) (6 (5) (7) ) )
