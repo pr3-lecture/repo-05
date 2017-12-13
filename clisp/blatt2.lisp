@@ -92,7 +92,7 @@
 )
 
 (defun print-levelorder (tree); gibt die Werte von tree in levelorder aus
-    (print (sort (levelorder tree 0) (lambda (l r) (< (second l) (second r)))))
+    (print (stable-sort (levelorder tree 0) (lambda (l r) (< (second l) (second r)))))
 )
 
 (defun levelorder (tree level); gibt eine Liste von Tupeln zurück in der die Zahl und das Level steht
