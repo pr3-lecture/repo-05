@@ -127,8 +127,12 @@
         )
   )
 
-(defun myRemove (tree val)
+(defun myRemove (tree val); gibt Baum ohne val zurück, val wird ersetzt, wenn möglich durch den kleinsten Wert im rechten Teilbaum
     (my-remove tree nil val)
 )
 
-(setq tree '(((()2 ()) 5 ()) 10 (() 15 ())))
+(setq tree '())
+
+(defun run (func); führt die gegebene funktion aus und speichert das Ergebnis in tree  
+  (setq tree (eval func))
+)
