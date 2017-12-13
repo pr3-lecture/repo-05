@@ -133,6 +133,6 @@
 
 (setq tree '())
 
-(defun run (func); führt die gegebene funktion aus und speichert das Ergebnis in tree  
-  (setq tree (eval func))
+(defun run (g f); speichert in dem symbol g die evalution von f
+  (setf (symbol-value g) (eval f))
 )
