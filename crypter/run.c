@@ -190,6 +190,7 @@ int main(int argc, char** argv)
             do {
                 input = readLineFrom(file);
 
+                /** Check if it means an error, or end of file out of the loop **/
                 if(!input)
                 {
                     break;
@@ -222,7 +223,8 @@ int main(int argc, char** argv)
                 }
             } while(1);
 
-            if(!feof(file))
+            /** Check if we read the file complete, or the encryption returned an error **/
+            if(!result && !feof(file))
             {
                 fclose(file);
                 cleanUp(filename, key, input, output);
