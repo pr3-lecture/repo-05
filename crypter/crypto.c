@@ -13,6 +13,7 @@ int crypt(KEY key, const char* in, char* out, int modus)
     const char* keyPos = key.chars;
     char* outPos = out;
     int pos = -1;
+    int firstKeyRun = 1;
 
     /** Check if the key is to short **/
     if(!strlen(key.chars))
@@ -26,10 +27,12 @@ int crypt(KEY key, const char* in, char* out, int modus)
         if(!*keyPos)
         {
             keyPos = key.chars;
+            /** We do not have to check the key again **/
+            firstKeyRun = 0;
         }
 
-        /** Check if the key contain illegal characters **/
-        if(!strchr(KEY_CHARACTERS, *keyPos))
+        /** Check on the first run, if the key contain illegal characters **/
+        if(firstKeyRun && !strchr(KEY_CHARACTERS, *keyPos))
         {
             return E_KEY_ILLEGAL_CHAR;
         }
