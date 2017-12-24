@@ -1,2 +1,6 @@
 **/bin/
 eclipse-workspace/
+output/
+crypter/*.exe
+crypter/*.o
+crypter/*.txt
