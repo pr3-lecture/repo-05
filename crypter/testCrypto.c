@@ -27,6 +27,8 @@ static const char* testToShortKeyEncrypt()
     key.chars = "";
 
     mu_assert("Key is to short on encrypt failed", encrypt(key, "HALLO", output) == E_KEY_TOO_SHORT);
+
+    return NULL;
 }
 
 static const char* testToShortKeyDecrypt()
@@ -34,6 +36,8 @@ static const char* testToShortKeyDecrypt()
     key.chars = "";
 
     mu_assert("Key is to short on decrypt failed", decrypt(key, "HALLO", output) == E_KEY_TOO_SHORT);
+
+    return NULL;
 }
 
 static const char* testEncrypt()
@@ -43,6 +47,8 @@ static const char* testEncrypt()
     int result = encrypt(key, "HALLO", output);
 
     mu_assert("Encrypt HELLO with MYKEY failed", strcmp("EXGIV", output) == 0 && result == 0);
+
+    return NULL;
 }
 
 static const char* testDecrypt()
@@ -52,6 +58,8 @@ static const char* testDecrypt()
     int result = decrypt(key, "EXGIV", output);
 
     mu_assert("Decrypt EXGIV with MYKEY failed", strcmp("HALLO", output) == 0 && result == 0);
+
+    return NULL;
 }
 
 static const char* testKeyIllegalCharsEncrypt()
@@ -59,6 +67,8 @@ static const char* testKeyIllegalCharsEncrypt()
     key.chars = "MyKEY";
 
     mu_assert("Key is illegal on encrypt failed", encrypt(key, "WAFFEL", output) == E_KEY_ILLEGAL_CHAR);
+
+    return NULL;
 }
 
 static const char* testKeyIllegalCharsDecrypt()
@@ -66,12 +76,16 @@ static const char* testKeyIllegalCharsDecrypt()
     key.chars = "MYKEy";
 
     mu_assert("Key is illegal on decrypt failed", decrypt(key, "PAPPEL", output) == E_KEY_ILLEGAL_CHAR);
+
+    return NULL;
 }
 
 static const char* testMessageIllegalChars()
 {
     key.chars = "PPPP";
     mu_assert("Message have illegal characters failed", encrypt(key, "WaFFeL", output) == E_MESSAGE_ILLEGAL_CHAR);
+
+    return NULL;
 }
 
 static const char* testCypherIllegalChars()
@@ -79,6 +93,8 @@ static const char* testCypherIllegalChars()
     key.chars = "HELLO";
 
     mu_assert("Cypher have illegal characters failed", decrypt(key, "H$223", output) == E_CYPHER_ILLEGAL_CHAR);
+
+    return NULL;
 }
 
 static const char* allTests()
