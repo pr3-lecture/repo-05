@@ -7,7 +7,8 @@
 
 char* copyString(const char* input, size_t length)
 {
-    char* destination = (char*) malloc((length + 1) * sizeof(char));
+    char* destination = NULL;
+    destination = (char*) malloc((length + 1) * sizeof(char));
 
     if(!destination)
     {
@@ -56,28 +57,22 @@ char* getFilename(char* path)
 {
     size_t size = 0;
     char* p;
-    char* name;
 
-    if(!path) {
-        return 0;
+    /** Check if it is only the name or a path  **/
+    if(!strchr(path, '\\'))
+    {
+        return path;
     }
 
-
-    p = &path[strlen(path)];
+    /** Find the begin of the name **/
+    p = &path[strlen(path) - 1];
     for(; *p != '\\'; p--)
     {
         ++size;
-        if(!p)
-        {
-            return 0;
-        }
     }
 
-    name = (char*) malloc(size * sizeof(char));
-    strncpy(name, p+1, size);
-    name[strlen(path) - size] = '\0';
-
-    return name;
+    /** Return the name of the file **/
+    return copyString(p + 1, size);
 }
 
 void cleanUp(char* filename, KEY key, char* input, char* output)
@@ -118,26 +113,25 @@ int main(int argc, char** argv)
     int result = -1;
     key.chars = NULL;
 
-
     filename = getFilename(argv[0]);
 
     if(!filename)
     {
         cleanUp(filename, key, input, output);
-        return exitWithError("Error: Your system is not supported");
+        return exitWithError("Error: Failed to allocate memory");
     }
-    else if(strcmp(filename, "encrypt.exe") == 0)
+    else if(strcmp(filename, "encrypt.exe") == 0 || strcmp(filename, "encrypt") == 0)
     {
         crypt = encrypt;
     }
-    else if(strcmp(filename, "decrypt.exe") == 0)
+    else if(strcmp(filename, "decrypt.exe") == 0 || strcmp(filename, "decrypt") == 0)
     {
         crypt = decrypt;
     }
     else
     {
         cleanUp(filename, key, input, output);
-        return exitWithError("Error: Your system is not supported");
+        return exitWithError("Error: Unsupported filename");
     }
 
     if(argc == 2 || argc == 3)
