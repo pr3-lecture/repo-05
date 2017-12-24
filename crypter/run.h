@@ -3,9 +3,9 @@
 
 #include "crypto.h"
 
-char* readLineFromConsole();
+#include <stdio.h>
 
-char* readFile(char* path);
+char* readLineFrom(FILE* in);
 
 char* getFilename(char* path);
 

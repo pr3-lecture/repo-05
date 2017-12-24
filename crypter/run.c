@@ -23,9 +23,9 @@ char* copyString(const char* input, size_t length)
     return destination;
 }
 
-char* readLineFromConsole()
+char* readLineFrom(FILE* in)
 {
-    const int readSize = 255;
+    const int readSize = 1024;
     char* destination;
 
     destination = (char*) malloc(readSize * sizeof(char));
@@ -35,7 +35,7 @@ char* readLineFromConsole()
         return NULL;
     }
 
-    destination = fgets(destination, readSize - 1, stdin);
+    destination = fgets(destination, readSize - 1, in);
     if(destination)
     {
         char *pos;
@@ -50,43 +50,6 @@ char* readLineFromConsole()
     }
 
     return destination;
-}
-
-char* readFile(char* path)
-{
-    size_t readCount = 0;
-    char* buffer = NULL;
-    FILE* file = NULL;
-    long fileSize = 0;
-
-    file = fopen(path, "r");
-
-    if(!file)
-    {
-        return NULL;
-    }
-
-    fseek(file, 0, SEEK_END);
-    ftell(file);
-    fseek(file, 0, SEEK_SET);
-
-    buffer = (char*) malloc((fileSize + 1) * sizeof(char));
-
-    if(!buffer)
-    {
-        fclose(file);
-        return NULL;
-    }
-
-    readCount = fread(buffer, 1, fileSize, file);
-    fclose(file);
-
-    if(readCount != fileSize)
-    {
-        return NULL;
-    }
-
-    return buffer;
 }
 
 char* getFilename(char* path)
@@ -153,6 +116,8 @@ int main(int argc, char** argv)
     char* input = NULL;
     char* output = NULL;
     int result = -1;
+    key.chars = NULL;
+
 
     filename = getFilename(argv[0]);
 
@@ -187,33 +152,88 @@ int main(int argc, char** argv)
 
         if(argc == 2)
         {
-            input = readLineFromConsole();
+            input = readLineFrom(stdin);
+
+            if(!input)
+            {
+                cleanUp(filename, key, input, output);
+                return exitWithError("Error: An input error occured");
+            }
+
+            output = (char*) malloc((strlen(input) + 1) * sizeof(char));
+
+            if(!output)
+            {
+                cleanUp(filename, key, input, output);
+                return exitWithError("Error: Failed to allocate memory");
+            }
+            output[strlen(input)] = '\0';
+
+            result = (*crypt) (key, input, output);
+
+            if(!result)
+            {
+                printf("%s\n", output);
+            }
         }
         else
         {
-            input = readFile(argv[2]);
+            FILE* file = NULL;
+            file = fopen(argv[2], "r");
+
+            if(!file)
+            {
+                cleanUp(filename, key, input, output);
+                return exitWithError("Error: Failed to open file");
+            }
+
+            do {
+                input = readLineFrom(file);
+
+                if(!input)
+                {
+                    break;
+                }
+
+                if(output)
+                {
+                    free(output);
+                }
+
+                output = (char*) malloc((strlen(input) + 1) * sizeof(char));
+
+                if(!output)
+                {
+                    fclose(file);
+                    cleanUp(filename, key, input, output);
+                    return exitWithError("Error: Failed to allocate memory");
+                }
+                output[strlen(input)] = '\0';
+
+                result = (*crypt) (key, input, output);
+
+                if(!result)
+                {
+                    printf("%s\n", output);
+                }
+                else
+                {
+                    break;
+                }
+            } while(1);
+
+            if(!feof(file))
+            {
+                fclose(file);
+                cleanUp(filename, key, input, output);
+                return exitWithError("Error: Failed to read from file");
+            }
+
+            fclose(file);
         }
-
-        if(!input)
-        {
-            cleanUp(filename, key, input, output);
-            return exitWithError("Error: An input error occured");
-        }
-
-        output = (char*) malloc((strlen(input) + 1) * sizeof(char));
-
-        if(!output)
-        {
-            cleanUp(filename, key, input, output);
-            return exitWithError("Error: Failed to allocate memory");
-        }
-        output[strlen(input)] = '\0';
-
-        result = (*crypt) (key, input, output);
 
         if(result == 0)
         {
-            printf("%s", output);
             /*All done, free the memory we allocated*/
             cleanUp(filename, key, input, output);
         }
