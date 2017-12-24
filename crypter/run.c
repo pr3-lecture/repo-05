@@ -223,7 +223,7 @@ int main(int argc, char** argv)
                 }
             } while(1);
 
-            /** Check if we read the file complete, or the encryption returned an error **/
+            /** Check if we reach the end of the file, or the encryption returned an error **/
             if(!result && !feof(file))
             {
                 fclose(file);
